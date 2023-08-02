@@ -25,5 +25,6 @@ Suggests:
     rmarkdown,
     pkgdown
 URL: https://yingxinlin.github.io/scMergeBioc2023/
+DockerImage: ghcr.io/yingxinlin/scmergebioc2023:latest
 BugReports: https://github.com/yingxinlin/scMergeBioc2023/issues/new/choose
 VignetteBuilder: knitr

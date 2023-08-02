@@ -302,9 +302,39 @@ example_sce <- scater::runPCA(example_sce, exprs_values = 'scMerge2')
 scater::plotPCA(example_sce, colour_by = 'cellTypes', shape = 'batch')
 ```
 
-#### Scenario 2
+### Scenario 2
 
-scMerge2h can handle a flexible merging strategy input. For example, on level 1 above, we can only merge data for one batch.
+scMerge2h can handle a flexible merging strategy input. For example, on level 1 above, we can only merge data for one batch. As an example, we can start from modify the batch index list and hierarchical index list to remove the list of batch 2 on level 1.
+
+
+```{r}
+h_idx_list2 <- h_idx_list
+batch_list2 <- batch_list
+h_idx_list2$level1$batch2 <- NULL
+batch_list2$level1$batch2 <- NULL
+print(h_idx_list2)
+print(batch_list2)
+```
+
+
+```{r warning=FALSE}
+scMerge2_res <- scMerge2h(exprsMat = logcounts(example_sce),
+                          batch_list = batch_list2,
+                          h_idx_list = h_idx_list2,
+                          ctl = segList_ensemblGeneID$mouse$mouse_scSEG,
+                          ruvK_list = c(2, 5),
+                          verbose = FALSE)
+```
+
+
+
+```{r}
+assay(example_sce, "scMerge2") <- scMerge2_res[[length(h_idx_list)]]
+set.seed(2022)
+example_sce <- scater::runPCA(example_sce, exprs_values = 'scMerge2')                           
+scater::plotPCA(example_sce, colour_by = 'cellTypes', shape = 'batch')
+```
+
 
 
 
