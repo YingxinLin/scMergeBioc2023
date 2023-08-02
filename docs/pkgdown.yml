@@ -3,7 +3,7 @@ pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
   an_intro_to_scMerge2: an_intro_to_scMerge2.html
-last_built: 2023-08-02T18:19Z
+last_built: 2023-08-02T18:38Z
 urls:
   reference: https://yingxinlin.github.io/scMergeBioc2023/reference
   article: https://yingxinlin.github.io/scMergeBioc2023/articles
