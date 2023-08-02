@@ -7,7 +7,7 @@ env:
 
 jobs:
   r-build-and-check:
-     permissions:
+    permissions:
       contents: read
     runs-on: ubuntu-latest
     container: bioconductor/bioconductor_docker:devel
