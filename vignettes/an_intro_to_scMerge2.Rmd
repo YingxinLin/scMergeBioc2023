@@ -109,6 +109,7 @@ suppressPackageStartupMessages({
     library(scMerge)
     library(scater)
     library(scMergeBioc2023)
+    library(ggpubr)
 })
 ```
 
