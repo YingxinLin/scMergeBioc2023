@@ -4,94 +4,123 @@ author: Yingxin Lin^[yingxinlin.res@gmail.com]
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{An introduction fo scMerge2}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
+    toc: yes
+    toc_depth: 4
 ---
-
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
+    collapse = TRUE,
+    comment = "#>"
 )
 ```
 
 # Atlas-scale single-cell multi-sample multi-condition data integration using scMerge2
 
-Authors:
-    Yingxin Lin^[Yale University].
-    <br/>
-Last modified: 2 August, 2023.
+Authors: Yingxin Lin[^1]. <br/> Last modified: 2 August, 2023.
+
+[^1]: Yale University
 
 ## Overview
 
-
-The recent emergence of multi-sample multi-condition single-cell multi-cohort studies allows researchers to investigate different cell states. The effective integration of multiple large-cohort studies promises biological insights into cells under different conditions that individual studies cannot provide. 
+The recent emergence of multi-sample multi-condition single-cell
+multi-cohort studies allows researchers to investigate different cell
+states. The effective integration of multiple large-cohort studies
+promises biological insights into cells under different conditions that
+individual studies cannot provide.
 
 ### Description
 
-With the rapid emergence of multi-sample multi-condition single-cell studies and the increased number of datasets for integration, our proposed scMerge2 addresses challenges associated with scalability of cells and studies as well as producing analytically ready data (i.e. adjusted expression matrix). This is achieved via three key innovations compared to the previous version of scMerge:
+With the rapid emergence of multi-sample multi-condition single-cell
+studies and the increased number of datasets for integration, our
+proposed scMerge2 addresses challenges associated with scalability of
+cells and studies as well as producing analytically ready data (i.e.
+adjusted expression matrix). This is achieved via three key innovations
+compared to the previous version of scMerge:
 
-1. Hierarchical integration is used to capture both local and global variation. scMerge2 provides users with a more flexible and adaptable multi-level merging structure, of which each level can comprise multiple collections of several batches and batch correction can be performed within each collection separately using user-defined batch labels. 
+1.  Hierarchical integration is used to capture both local and global
+variation. scMerge2 provides users with a more flexible and
+adaptable multi-level merging structure, of which each level can
+comprise multiple collections of several batches and batch
+correction can be performed within each collection separately using
+user-defined batch labels.
 
-2. Pseudo-bulk construction is used to reduce computing load, allowing for the analysis of datasets containing millions of cells. 
+2.  Pseudo-bulk construction is used to reduce computing load, allowing
+for the analysis of datasets containing millions of cells.
 
-3. Pseudo-replication inside each condition is built, allowing for the modelling of numerous conditions. 
+3.  Pseudo-replication inside each condition is built, allowing for the
+modelling of numerous conditions.
 
-In essence, scMerge2 takes gene expression matrices from a collection of datasets and integrates them in a hierarchical manner. The final output of scMerge2 is a single adjusted expression matrix with all input data matrices merged and ready for downstream analysis.
-
+In essence, scMerge2 takes gene expression matrices from a collection of
+datasets and integrates them in a hierarchical manner. The final output
+of scMerge2 is a single adjusted expression matrix with all input data
+matrices merged and ready for downstream analysis.
 
 ### Pre-requisites
 
 It is expected that students will have:
 
-1. Basic knowledge of R syntax
-2. Familiarity with `SingleCellExperiment` objects
-
+1.  Basic knowledge of R syntax
+2.  Familiarity with `SingleCellExperiment` objects
 
 ### Participation
 
-While it will be possible for participants to run code as we go through the demonstration, given time constraints, I would encourage them to focus their attention into integration strategies behind scMerge2 (pseudo-replicates, pseudo-bulk, stably expressed genes, number of unwatned variation factors and hierarchical mering etc.). Questions are welcome both within the workshop and if participants choose to work through the workshop independently after the demonstration.
+While it will be possible for participants to run code as we go through
+the demonstration, given time constraints, I would encourage them to
+focus their attention into integration strategies behind scMerge2
+(pseudo-replicates, pseudo-bulk, stably expressed genes, number of
+unwatned variation factors and hierarchical mering etc.). Questions are
+welcome both within the workshop and if participants choose to work
+through the workshop independently after the demonstration.
 
+### *R* / *Bioconductor* packages used
 
-### _R_ / _Bioconductor_ packages used
-
-This workshop will focus on Bioconductor packages scMerge and [SingleCellExperiment] (https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html).
-
+This workshop will focus on Bioconductor packages scMerge and
+[SingleCellExperiment]
+(<https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html>).
 
 ### Time outline
 
 An example for a 45-minute workshop:
 
-| Activity                     | Time |
-|------------------------------|------|
-| Introduction of method       | 10m  |
-| Introduction of core function| 10m  |
-| Hierarchical merging         | 10m  |
-| Best practise                | 10m  |
-
+| Activity                      | Time |
+|-------------------------------|------|
+| Introduction of method        | 10m  |
+| Introduction of core function | 10m  |
+| Hierarchical merging          | 10m  |
+| Best practise                 | 10m  |
 
 # Workshop
 
 ## Loading Packages and Data
 
-We will load the `scMerge` package. We designed our package to be consistent with the popular BioConductor's single cell analysis framework, namely the `SingleCellExperiment` and `scater` package. 
+We will load the `scMerge` package. We designed our package to be
+consistent with the popular BioConductor's single cell analysis
+framework, namely the `SingleCellExperiment` and `scater` package.
 
 ```{r loading packages, warning = FALSE, message = FALSE}
 suppressPackageStartupMessages({
     library(SingleCellExperiment)
     library(scMerge)
     library(scater)
+    library(scMergeBioc2023)
 })
 ```
 
+We provided an illustrative mouse embryonic stem cell (mESC) data in our
+package, as well as a set of pre-computed stably expressed gene (SEG)
+list to be used as negative control genes.
 
-We provided an illustrative mouse embryonic stem cell (mESC) data in our package, as well as a set of pre-computed stably expressed gene (SEG) list to be used as negative control genes. 
-
-
-The full curated, unnormalised mESC data can be found [here](http://www.maths.usyd.edu.au/u/yingxinl/wwwnb/scMergeData/sce_mESC.rda). The `scMerge` package comes with a sub-sampled, two-batches version of this data (named "batch2" and "batch3" to be consistent with the full data) . 
-
-
+The full curated, unnormalised mESC data can be found
+[here](http://www.maths.usyd.edu.au/u/yingxinl/wwwnb/scMergeData/sce_mESC.rda).
+The `scMerge` package comes with a sub-sampled, two-batches version of
+this data (named "batch2" and "batch3" to be consistent with the full
+data) .
 
 ```{r loading data}
 ## Subsetted mouse ESC data
@@ -99,24 +128,28 @@ data("example_sce", package = "scMerge")
 data("segList_ensemblGeneID", package = "scMerge")
 ```
 
-
-In this mESC data, we pooled data from 2 different batches from three different cell types. Using a PCA plot, we can see that despite strong separation of cell types, there is also a strong separation due to batch effects. This information is stored in the `colData` of `example_sce`. 
+In this mESC data, we pooled data from 2 different batches from three
+different cell types. Using a PCA plot, we can see that despite strong
+separation of cell types, there is also a strong separation due to batch
+effects. This information is stored in the `colData` of `example_sce`.
 
 ```{r checking raw data}
-example_sce = runPCA(example_sce, exprs_values = "logcounts")
+example_sce <- runPCA(example_sce, exprs_values = "logcounts")
 
 scater::plotPCA(example_sce, 
                 colour_by = "cellTypes", 
                 shape_by = "batch")
 ```
 
-
 ## scMerge2
 
 ### Unsupervised `scMerge2`
 
-In unsupervised `scMerge2`, we will perform graph clustering on shared nearest neighbour graphs within each batch to obtain pseudo-replicates. This requires the users to supply a `k_celltype` vector with the number of neighbour when constructed the nearest neighbour graph in each of the batches. By default, this number is 10.
-
+In unsupervised `scMerge2`, we will perform graph clustering on shared
+nearest neighbour graphs within each batch to obtain pseudo-replicates.
+This requires the users to supply a `k_celltype` vector with the number
+of neighbour when constructed the nearest neighbour graph in each of the
+batches. By default, this number is 10.
 
 ```{r}
 scMerge2_res <- scMerge2(exprsMat = logcounts(example_sce),
@@ -125,19 +158,21 @@ scMerge2_res <- scMerge2(exprsMat = logcounts(example_sce),
                          verbose = FALSE)
 
 assay(example_sce, "scMerge2") <- scMerge2_res$newY
+```
 
+
+```{r}
 set.seed(2022)
 example_sce <- scater::runPCA(example_sce, exprs_values = 'scMerge2')                                       
 scater::plotPCA(example_sce, colour_by = 'cellTypes', shape = 'batch')
 ```
 
-
 ### Semi-supervised `scMerge2`
 
-
-When cell type information are known (e.g. results from cell type classification using reference), scMerge2 can use this information to construct pseudo-replicates and identify mutual nearest groups with `cellTypes` input. 
-
-
+When cell type information are known (e.g. results from cell type
+classification using reference), scMerge2 can use this information to
+construct pseudo-replicates and identify mutual nearest groups with
+`cellTypes` input.
 
 ```{r}
 scMerge2_res <- scMerge2(exprsMat = logcounts(example_sce),
@@ -155,9 +190,12 @@ scater::plotPCA(example_sce, colour_by = 'cellTypes', shape = 'batch')
 
 ## More details of scMerge2
 
-### Number of pseudobulk 
+### Number of pseudobulk
 
-The number of pseudobulk constructed within each cell grouping is set via `k_pseudoBulk`. By default, this number is set as 30. A larger number will create more pseudo-bulk data in model estimation, with longer time in estimation. 
+The number of pseudobulk constructed within each cell grouping is set
+via `k_pseudoBulk`. By default, this number is set as 30. A larger
+number will create more pseudo-bulk data in model estimation, with
+longer time in estimation.
 
 ```{r}
 scMerge2_res <- scMerge2(exprsMat = logcounts(example_sce),
@@ -174,12 +212,19 @@ example_sce <- scater::runPCA(example_sce, exprs_values = 'scMerge2')
 scater::plotPCA(example_sce, colour_by = 'cellTypes', shape = 'batch')
 ```
 
-### Return matrix by batch 
+### Return matrix by batch
 
-When working with large data, we can get the adjusted matrix for a smaller subset of cells each time. This can be achieved by setting `return_matrix` to `FALSE` in `scMerge2()` function, which the function then will not return the adjusted whole matrix but will output the estimated `fullalpha`.
-Then to get the adjusted matrix using the estimated `fullalpha`, we first need to performed cosine normalisation on the logcounts matrix and then calculate the row-wise (gene-wise) mean of the cosine normalised matrix (This is because by default, `scMerge2()` perform cosine normalisation on the log-normalised matrix before `RUVIII` step). Then we can use `getAdjustedMat()` to adjust the matrix of a subset of cells each time.
-
-
+When working with large data, we can get the adjusted matrix for a
+smaller subset of cells each time. This can be achieved by setting
+`return_matrix` to `FALSE` in `scMerge2()` function, which the function
+then will not return the adjusted whole matrix but will output the
+estimated `fullalpha`. Then to get the adjusted matrix using the
+estimated `fullalpha`, we first need to performed cosine normalisation
+on the logcounts matrix and then calculate the row-wise (gene-wise) mean
+of the cosine normalised matrix (This is because by default,
+`scMerge2()` perform cosine normalisation on the log-normalised matrix
+before `RUVIII` step). Then we can use `getAdjustedMat()` to adjust the
+matrix of a subset of cells each time.
 
 ```{r}
 scMerge2_res <- scMerge2(exprsMat = logcounts(example_sce),
@@ -209,15 +254,20 @@ scater::plotPCA(example_sce, colour_by = 'cellTypes', shape = 'batch')
 
 ```
 
+Note that we can also adjust only a subset of genes by input a gene list
+in `return_subset_genes` in both `getAdjustedMat()` and `scMerge2()`.
 
-Note that we can also adjust only a subset of genes by input a gene list in `return_subset_genes` in 
-both `getAdjustedMat()` and `scMerge2()`.
+## Hierarchical scMerge2
 
-### Hierarchical scMerge2
+scMerge2 provides a hierarchical merging strategy for data integration
+that requires multiple level adjustment through function `scMerge2h()`.
+For example, for the dataset with multiple samples, we may want to
+remove the sample effect first within the dataset before integrate it
+with other datasets. Below, we will illustrate how we can build a
+hierarchical merging order as input for `scMerge2h()`.
 
-scMerge2 provides a hierarchical merging strategy for data integration that requires multiple level adjustment through function `scMerge2h()`. For example, for the dataset with multiple samples, we may want to remove the sample effect first within the dataset before integrate it with other datasets. Below, we will illustrate how we can build a hierarchical merging order as input for `scMerge2h()`.
-
-For illustration purpose, here I first create a fake sample information for the sample data. Now, each batch has two samples. 
+For illustration purpose, here I first create a fake sample information
+for the sample data. Now, each batch has two samples.
 
 ```{r}
 # Create a fake sample information
@@ -225,18 +275,25 @@ example_sce$sample <- rep(c(1:4), each = 50)
 table(example_sce$sample, example_sce$batch)
 ```
 
-To perform `scMerge2h`, we need to create 
+To perform `scMerge2h`, we need to create
 
-1. a hierarchical index list that indicates the indices of the cells that are going into merging;
-2. a batch information list that indicates the batch information of each merging.
+1.  a hierarchical index list that indicates the indices of the cells
+that are going into merging;
+2.  a batch information list that indicates the batch information of
+each merging.
 
+### Scenario 1
 
-#### Scenario 1
+We will first illustrate that a two-level merging case, where the first
+level refers to the sample effect removal within each batch, and the
+second level refers to the merging of two batches.
 
-We will first illustrate that a two-level merging case, where the first level refers to the sample effect removal within each batch, and the second level refers to the merging of two batches. 
-
-First, we will construct the hierarchical index list (`h_idx_list`). The hierarchical index list is a list that indicates for each level, which indices of the cells are going into merging. The number of the element of the list should be the same with the number of level of merging. For each element, it should contain a list of vectors of indices of each merging.
-
+First, we will construct the hierarchical index list (`h_idx_list`). The
+hierarchical index list is a list that indicates for each level, which
+indices of the cells are going into merging. The number of the element
+of the list should be the same with the number of level of merging. For
+each element, it should contain a list of vectors of indices of each
+merging.
 
 ```{r}
 # Construct a hierarchical index list
@@ -244,20 +301,25 @@ h_idx_list <- list(level1 = split(seq_len(ncol(example_sce)), example_sce$batch)
                    level2 = list(seq_len(ncol(example_sce))))
 ```
 
-On level 1, we will perform two merging, one for each batch. Therefore, we have a list of two vectors of indices. Each indicates the indices of the cells of the batches.
+On level 1, we will perform two merging, one for each batch. Therefore,
+we have a list of two vectors of indices. Each indicates the indices of
+the cells of the batches.
 
 ```{r}
 h_idx_list$level1
 ```
 
-On level 2, we will perform one merging to merge two batches. Therefore, we have a list of one vector of indices, indicates all the indices of the cells of the full data.
+On level 2, we will perform one merging to merge two batches. Therefore,
+we have a list of one vector of indices, indicates all the indices of
+the cells of the full data.
 
 ```{r}
 h_idx_list$level2
 ```
 
-Next, we need to create the batch information list (`batch_list`), which has the same structure with the `h_idx_list`, but indicates the batch label of the `h_idx_list`. 
-
+Next, we need to create the batch information list (`batch_list`), which
+has the same structure with the `h_idx_list`, but indicates the batch
+label of the `h_idx_list`.
 
 ```{r}
 # Construct a batch information list
@@ -265,16 +327,19 @@ batch_list <- list(level1 = split(example_sce$sample, example_sce$batch),
                    level2 = list(example_sce$batch))
 ```
 
-We can see `batch_list` indicates the batch label for level of the merging.
+We can see `batch_list` indicates the batch label for level of the
+merging.
 
 ```{r}
 batch_list$level1
 ```
 
-
-
-Now, we can input the `batch_list` and `h_idx_list` in `scMerge2h` to merge the data hierarchically. 
-We also need to input a `ruvK_list`, a vector of number of unwanted variation (k in RUV model) for each level of the merging. We suggest a lower `ruvK` in the first level. Here we set `ruvK_list = c(2, 5)` which indicates we will set RUV's k equal to 2 in the first level and 5 in the second level.
+Now, we can input the `batch_list` and `h_idx_list` in `scMerge2h` to
+merge the data hierarchically. We also need to input a `ruvK_list`, a
+vector of number of unwanted variation (k in RUV model) for each level
+of the merging. We suggest a lower `ruvK` in the first level. Here we
+set `ruvK_list = c(2, 5)` which indicates we will set RUV's k equal to 2
+in the first level and 5 in the second level.
 
 ```{r warning=FALSE}
 scMerge2_res <- scMerge2h(exprsMat = logcounts(example_sce),
@@ -285,15 +350,16 @@ scMerge2_res <- scMerge2h(exprsMat = logcounts(example_sce),
                           verbose = FALSE)
 ```
 
-The output of `scMerge2h` is a list of matrices indicates the adjusted matrix from each level.
+The output of `scMerge2h` is a list of matrices indicates the adjusted
+matrix from each level.
 
 ```{r}
 length(scMerge2_res)
 lapply(scMerge2_res, dim)
 ```
 
-
-Here we will use the adjusted matrix from the last level as the final adjusted matrix.
+Here we will use the adjusted matrix from the last level as the final
+adjusted matrix.
 
 ```{r}
 assay(example_sce, "scMerge2") <- scMerge2_res[[length(h_idx_list)]]
@@ -304,8 +370,10 @@ scater::plotPCA(example_sce, colour_by = 'cellTypes', shape = 'batch')
 
 ### Scenario 2
 
-scMerge2h can handle a flexible merging strategy input. For example, on level 1 above, we can only merge data for one batch. As an example, we can start from modify the batch index list and hierarchical index list to remove the list of batch 2 on level 1.
-
+scMerge2h can handle a flexible merging strategy input. For example, on
+level 1 above, we can only merge data for one batch. As an example, we
+can start from modify the batch index list and hierarchical index list
+to remove the list of batch 2 on level 1.
 
 ```{r}
 h_idx_list2 <- h_idx_list
@@ -316,7 +384,6 @@ print(h_idx_list2)
 print(batch_list2)
 ```
 
-
 ```{r warning=FALSE}
 scMerge2_res <- scMerge2h(exprsMat = logcounts(example_sce),
                           batch_list = batch_list2,
@@ -326,14 +393,141 @@ scMerge2_res <- scMerge2h(exprsMat = logcounts(example_sce),
                           verbose = FALSE)
 ```
 
-
-
 ```{r}
 assay(example_sce, "scMerge2") <- scMerge2_res[[length(h_idx_list)]]
 set.seed(2022)
 example_sce <- scater::runPCA(example_sce, exprs_values = 'scMerge2')                           
 scater::plotPCA(example_sce, colour_by = 'cellTypes', shape = 'batch')
 ```
+
+## Phenotype specific pseudo-replicates
+
+Next, we will use another dataset as an example with two conditions to demonstrate multi-condition data integration.  The data is a subset of CITE-seq data from a COVID-19 study (Stephenson et al. 2021). Here we subset the data to only 4 individuals from 2 sites. 
+
+```{r}
+data(sce_covid)
+sce_covid
+```
+
+
+We can first explore the data structure of this subset data. We can see we have 4 samples from 2 sites, each site has one sample from Healthy donor and one sample from Mild/Moderate COVID-19 patients. 
+
+```{r}
+ggplot(data.frame(colData(sce_covid)), 
+       aes(x = meta_sample_id,
+           fill = level2)) +
+    geom_bar() +
+    facet_wrap(~meta_severity + Site, scale = "free_y", ncol = 1) +
+    theme_bw() +
+    coord_flip()
+```
+
+We will first look at the RNA-seq data.
+
+```{r}
+decomp <- scran::modelGeneVar(sce_covid)
+hvg <- scran::getTopHVGs(decomp, n = 2000)
+sce_covid <- scater::runPCA(sce_covid, 
+                      exprs_values = 'logcounts', subset_row = hvg)           
+sce_covid <- scater::runUMAP(sce_covid, dimred = "PCA")    
+g1 <- scater::plotUMAP(sce_covid, colour_by = 'level2', shape = 'Site')
+g2 <- scater::plotUMAP(sce_covid, colour_by = 'level3', shape = 'Site')
+g3 <- scater::plotUMAP(sce_covid, colour_by = 'meta_severity')
+g4 <- scater::plotUMAP(sce_covid, colour_by = 'Site')
+ggpubr::ggarrange(g1, g2, g3, g4, ncol = 2, nrow = 2, align = "hv")
+```
+
+Next, we need to determine the stably expressed genes used as negative control
+
+```{r}
+head(rownames(sce_covid))
+```
+
+We can then load the stably expressed genes data that is coded in gene symbol:
+
+```{r}
+data(segList)
+head(segList$human$human_scSEG)
+```
+
+We can then run `scMerge2` by setting 
+
+1. `ctl = segList$human$human_scSEG`;
+2. `batch = sce_covid$Site`;
+3. `condition = sce_covid$meta_severity` to trigger the pneotype-specific pseudo-replicates identification.
+
+
+```{r}
+scMerge2_res <- scMerge2(exprsMat = logcounts(sce_covid),
+                         batch = sce_covid$Site,
+                         ctl = segList$human$human_scSEG,
+                         condition = sce_covid$meta_severity,
+                         cellTypes = sce_covid$level3,
+                         verbose = FALSE)
+
+assay(sce_covid, "scMerge2") <- scMerge2_res$newY
+```
+
+
+```{r}
+set.seed(2022)
+sce_covid <- scater::runPCA(sce_covid, exprs_values = 'scMerge2', subset_row = hvg)           
+sce_covid <- scater::runUMAP(sce_covid, dimred = "PCA")    
+scater::plotUMAP(sce_covid, colour_by = 'level3', shape = 'Site')
+scater::plotUMAP(sce_covid, colour_by = 'meta_severity')
+scater::plotUMAP(sce_covid, colour_by = 'Site')
+```
+
+
+
+## CITE-seq data integration
+
+Next, we will explore the ADT protein abundance data. 
+
+```{r}
+altExp(sce_covid, "ADT")
+```
+
+This CITE-seq data has measure 192 proteins. We can see that similar to scRNA-seq data, the protein abundance data also displays the batch effect between the two sites.
+
+```{r}
+set.seed(2022)
+sce_covid <- scater::runPCA(sce_covid, exprs_values = 'logcounts', 
+                      altexp = "ADT", name = "PCA_ADT")           
+sce_covid <- scater::runUMAP(sce_covid, dimred = "PCA_ADT", name = "UMAP_ADT")    
+scater::plotReducedDim(sce_covid, colour_by = 'level3', 
+                       shape = 'Site', dimred = "UMAP_ADT")   
+scater::plotReducedDim(sce_covid, colour_by = 'meta_severity', dimred = "UMAP_ADT")   
+scater::plotReducedDim(sce_covid, colour_by = 'Site', dimred = "UMAP_ADT")   
+```
+
+We will try the following settings of scMerge2 to integrate the protein abundance
+
+1. We will use all proteins as negative control `ctl = rownames(altExp(sce_covid, "ADT"))` (we find that for data with small number of features, using all features as negative control usually works well);
+2. We will start from a smaller number of unwanted varaition as the number of features in total is only 192: `ruvK = 10`.
+
+```{r}
+scMerge2_res_adt <- scMerge2(exprsMat = assay(altExp(sce_covid, "ADT"), "logcounts"),
+                             batch = sce_covid$Site,
+                             ctl = rownames(altExp(sce_covid, "ADT")),
+                             condition = sce_covid$meta_severity,
+                             ruvK = 10,
+                             verbose = FALSE)
+assay(altExp(sce_covid, "ADT"), "scMerge2") <- scMerge2_res_adt$newY
+```
+
+
+```{r}
+set.seed(2022)
+sce_covid <- scater::runPCA(sce_covid, exprs_values = 'scMerge2', 
+                      altexp = "ADT", name = "PCA_ADT")           
+sce_covid <- scater::runUMAP(sce_covid, dimred = "PCA_ADT", name = "UMAP_ADT")    
+scater::plotReducedDim(sce_covid, colour_by = 'level3', 
+                       shape = 'Site', dimred = "UMAP_ADT")   
+scater::plotReducedDim(sce_covid, colour_by = 'meta_severity', dimred = "UMAP_ADT")   
+scater::plotReducedDim(sce_covid, colour_by = 'Site', dimred = "UMAP_ADT")   
+```
+
 
 
 
@@ -343,7 +537,3 @@ scater::plotPCA(example_sce, colour_by = 'cellTypes', shape = 'batch')
 ```{r session info}
 sessionInfo()
 ```
-
-
-
-

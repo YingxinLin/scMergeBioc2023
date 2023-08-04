@@ -20,7 +20,8 @@ Depends:
     scater,
     scran,
     DelayedMatrixStats,
-    batchelor
+    batchelor,
+    R (>= 2.10)
 Suggests: 
     knitr,
     rmarkdown,
