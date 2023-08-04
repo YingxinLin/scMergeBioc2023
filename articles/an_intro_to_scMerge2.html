@@ -106,9 +106,9 @@ individual studies cannot provide.</p>
 <p>With the rapid emergence of multi-sample multi-condition single-cell
 studies and the increased number of datasets for integration, our
 proposed scMerge2 addresses challenges associated with scalability of
-cells and studies as well as producing analytically ready data
-(i.e. adjusted expression matrix). This is achieved via three key
-innovations compared to the previous version of scMerge:</p>
+cells and studies as well as producing analytically ready data (i.e.
+adjusted expression matrix). This is achieved via three key innovations
+compared to the previous version of scMerge:</p>
 <ol style="list-style-type: decimal">
 <li><p>Hierarchical integration is used to capture both local and global
 variation. scMerge2 provides users with a more flexible and adaptable
@@ -200,6 +200,8 @@ analysis framework, namely the <code>SingleCellExperiment</code> and
 <span>    <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">SingleCellExperiment</span><span class="op">)</span></span>
 <span>    <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/SydneyBioX/scMerge" class="external-link">scMerge</a></span><span class="op">)</span></span>
 <span>    <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://bioconductor.org/packages/scater/" class="external-link">scater</a></span><span class="op">)</span></span>
+<span>    <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://yingxinlin.github.io/scMergeBioc2023/">scMergeBioc2023</a></span><span class="op">)</span></span>
+<span>    <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rpkgs.datanovia.com/ggpubr/" class="external-link">ggpubr</a></span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
 <p>We provided an illustrative mouse embryonic stem cell (mESC) data in
 our package, as well as a set of pre-computed stably expressed gene
@@ -218,7 +220,7 @@ separation of cell types, there is also a strong separation due to batch
 effects. This information is stored in the <code>colData</code> of
 <code>example_sce</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">example_sce</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocSingular/man/runPCA.html" class="external-link">runPCA</a></span><span class="op">(</span><span class="va">example_sce</span>, exprs_values <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">example_sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocSingular/man/runPCA.html" class="external-link">runPCA</a></span><span class="op">(</span><span class="va">example_sce</span>, exprs_values <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/plotPCA.html" class="external-link">plotPCA</a></span><span class="op">(</span><span class="va">example_sce</span>, </span>
 <span>                colour_by <span class="op">=</span> <span class="st">"cellTypes"</span>, </span>
@@ -249,14 +251,12 @@ default, this number is 10.</p>
 <span><span class="co">#&gt; TRUE, : You're computing too large a percentage of total singular values, use a</span></span>
 <span><span class="co">#&gt; standard svd instead.</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></span><span class="op">(</span><span class="va">example_sce</span>, <span class="st">"scMerge2"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">scMerge2_res</span><span class="op">$</span><span class="va">newY</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2022</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></span><span class="op">(</span><span class="va">example_sce</span>, <span class="st">"scMerge2"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">scMerge2_res</span><span class="op">$</span><span class="va">newY</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2022</span><span class="op">)</span></span>
 <span><span class="va">example_sce</span> <span class="op">&lt;-</span> <span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocSingular/man/runPCA.html" class="external-link">runPCA</a></span><span class="op">(</span><span class="va">example_sce</span>, exprs_values <span class="op">=</span> <span class="st">'scMerge2'</span><span class="op">)</span>                                       </span>
-<span><span class="co">#&gt; Warning: useNames = NA is deprecated. Instead, specify either useNames = TRUE</span></span>
-<span><span class="co">#&gt; or useNames = TRUE.</span></span>
 <span><span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/plotPCA.html" class="external-link">plotPCA</a></span><span class="op">(</span><span class="va">example_sce</span>, colour_by <span class="op">=</span> <span class="st">'cellTypes'</span>, shape <span class="op">=</span> <span class="st">'batch'</span><span class="op">)</span></span></code></pre></div>
-<p><img src="an_intro_to_scMerge2_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
+<p><img src="an_intro_to_scMerge2_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
 </div>
 <div class="section level4">
 <h4 id="semi-supervised-scmerge2">Semi-supervised <code>scMerge2</code><a class="anchor" aria-label="anchor" href="#semi-supervised-scmerge2"></a>
@@ -265,7 +265,7 @@ default, this number is 10.</p>
 classification using reference), scMerge2 can use this information to
 construct pseudo-replicates and identify mutual nearest groups with
 <code>cellTypes</code> input.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scMerge2_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scMerge/man/scMerge2.html" class="external-link">scMerge2</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html" class="external-link">logcounts</a></span><span class="op">(</span><span class="va">example_sce</span><span class="op">)</span>,</span>
 <span>                         batch <span class="op">=</span> <span class="va">example_sce</span><span class="op">$</span><span class="va">batch</span>,</span>
 <span>                         cellTypes <span class="op">=</span> <span class="va">example_sce</span><span class="op">$</span><span class="va">cellTypes</span>,</span>
@@ -276,10 +276,8 @@ construct pseudo-replicates and identify mutual nearest groups with
 <span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></span><span class="op">(</span><span class="va">example_sce</span>, <span class="st">"scMerge2"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">scMerge2_res</span><span class="op">$</span><span class="va">newY</span></span>
 <span></span>
 <span><span class="va">example_sce</span> <span class="op">=</span> <span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocSingular/man/runPCA.html" class="external-link">runPCA</a></span><span class="op">(</span><span class="va">example_sce</span>, exprs_values <span class="op">=</span> <span class="st">'scMerge2'</span><span class="op">)</span>                                       </span>
-<span><span class="co">#&gt; Warning: useNames = NA is deprecated. Instead, specify either useNames = TRUE</span></span>
-<span><span class="co">#&gt; or useNames = TRUE.</span></span>
 <span><span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/plotPCA.html" class="external-link">plotPCA</a></span><span class="op">(</span><span class="va">example_sce</span>, colour_by <span class="op">=</span> <span class="st">'cellTypes'</span>, shape <span class="op">=</span> <span class="st">'batch'</span><span class="op">)</span></span></code></pre></div>
-<p><img src="an_intro_to_scMerge2_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
+<p><img src="an_intro_to_scMerge2_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
 </div>
 </div>
 <div class="section level3">
@@ -292,7 +290,7 @@ construct pseudo-replicates and identify mutual nearest groups with
 via <code>k_pseudoBulk</code>. By default, this number is set as 30. A
 larger number will create more pseudo-bulk data in model estimation,
 with longer time in estimation.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scMerge2_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scMerge/man/scMerge2.html" class="external-link">scMerge2</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html" class="external-link">logcounts</a></span><span class="op">(</span><span class="va">example_sce</span><span class="op">)</span>,</span>
 <span>                         batch <span class="op">=</span> <span class="va">example_sce</span><span class="op">$</span><span class="va">batch</span>,</span>
 <span>                         ctl <span class="op">=</span> <span class="va">segList_ensemblGeneID</span><span class="op">$</span><span class="va">mouse</span><span class="op">$</span><span class="va">mouse_scSEG</span>,</span>
@@ -310,10 +308,8 @@ with longer time in estimation.</p>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2022</span><span class="op">)</span></span>
 <span><span class="va">example_sce</span> <span class="op">&lt;-</span> <span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocSingular/man/runPCA.html" class="external-link">runPCA</a></span><span class="op">(</span><span class="va">example_sce</span>, exprs_values <span class="op">=</span> <span class="st">'scMerge2'</span><span class="op">)</span>                                       </span>
-<span><span class="co">#&gt; Warning: useNames = NA is deprecated. Instead, specify either useNames = TRUE</span></span>
-<span><span class="co">#&gt; or useNames = TRUE.</span></span>
 <span><span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/plotPCA.html" class="external-link">plotPCA</a></span><span class="op">(</span><span class="va">example_sce</span>, colour_by <span class="op">=</span> <span class="st">'cellTypes'</span>, shape <span class="op">=</span> <span class="st">'batch'</span><span class="op">)</span></span></code></pre></div>
-<p><img src="an_intro_to_scMerge2_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
+<p><img src="an_intro_to_scMerge2_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
 </div>
 <div class="section level4">
 <h4 id="return-matrix-by-batch">Return matrix by batch<a class="anchor" aria-label="anchor" href="#return-matrix-by-batch"></a>
@@ -331,7 +327,7 @@ default, <code><a href="https://rdrr.io/pkg/scMerge/man/scMerge2.html" class="ex
 log-normalised matrix before <code>RUVIII</code> step). Then we can use
 <code><a href="https://rdrr.io/pkg/scMerge/man/getAdjustedMat.html" class="external-link">getAdjustedMat()</a></code> to adjust the matrix of a subset of cells
 each time.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scMerge2_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scMerge/man/scMerge2.html" class="external-link">scMerge2</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html" class="external-link">logcounts</a></span><span class="op">(</span><span class="va">example_sce</span><span class="op">)</span>,</span>
 <span>                         batch <span class="op">=</span> <span class="va">example_sce</span><span class="op">$</span><span class="va">batch</span>,</span>
 <span>                         ctl <span class="op">=</span> <span class="va">segList_ensemblGeneID</span><span class="op">$</span><span class="va">mouse</span><span class="op">$</span><span class="va">mouse_scSEG</span>,</span>
@@ -361,17 +357,16 @@ each time.</p>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2022</span><span class="op">)</span></span>
 <span><span class="va">example_sce</span> <span class="op">&lt;-</span> <span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocSingular/man/runPCA.html" class="external-link">runPCA</a></span><span class="op">(</span><span class="va">example_sce</span>, exprs_values <span class="op">=</span> <span class="st">'scMerge2'</span><span class="op">)</span>                                       </span>
-<span><span class="co">#&gt; Warning: useNames = NA is deprecated. Instead, specify either useNames = TRUE</span></span>
-<span><span class="co">#&gt; or useNames = TRUE.</span></span>
 <span><span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/plotPCA.html" class="external-link">plotPCA</a></span><span class="op">(</span><span class="va">example_sce</span>, colour_by <span class="op">=</span> <span class="st">'cellTypes'</span>, shape <span class="op">=</span> <span class="st">'batch'</span><span class="op">)</span></span></code></pre></div>
-<p><img src="an_intro_to_scMerge2_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
+<p><img src="an_intro_to_scMerge2_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 <p>Note that we can also adjust only a subset of genes by input a gene
 list in <code>return_subset_genes</code> in both
 <code><a href="https://rdrr.io/pkg/scMerge/man/getAdjustedMat.html" class="external-link">getAdjustedMat()</a></code> and <code><a href="https://rdrr.io/pkg/scMerge/man/scMerge2.html" class="external-link">scMerge2()</a></code>.</p>
 </div>
-<div class="section level4">
-<h4 id="hierarchical-scmerge2">Hierarchical scMerge2<a class="anchor" aria-label="anchor" href="#hierarchical-scmerge2"></a>
-</h4>
+</div>
+<div class="section level3">
+<h3 id="hierarchical-scmerge2">Hierarchical scMerge2<a class="anchor" aria-label="anchor" href="#hierarchical-scmerge2"></a>
+</h3>
 <p>scMerge2 provides a hierarchical merging strategy for data
 integration that requires multiple level adjustment through function
 <code><a href="https://rdrr.io/pkg/scMerge/man/scMerge2h.html" class="external-link">scMerge2h()</a></code>. For example, for the dataset with multiple
@@ -381,7 +376,7 @@ illustrate how we can build a hierarchical merging order as input for
 <code><a href="https://rdrr.io/pkg/scMerge/man/scMerge2h.html" class="external-link">scMerge2h()</a></code>.</p>
 <p>For illustration purpose, here I first create a fake sample
 information for the sample data. Now, each batch has two samples.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create a fake sample information</span></span>
 <span><span class="va">example_sce</span><span class="op">$</span><span class="va">sample</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">example_sce</span><span class="op">$</span><span class="va">sample</span>, <span class="va">example_sce</span><span class="op">$</span><span class="va">batch</span><span class="op">)</span></span>
@@ -398,9 +393,9 @@ that are going into merging;</li>
 <li>a batch information list that indicates the batch information of
 each merging.</li>
 </ol>
-<div class="section level5">
-<h5 id="scenario-1">Scenario 1<a class="anchor" aria-label="anchor" href="#scenario-1"></a>
-</h5>
+<div class="section level4">
+<h4 id="scenario-1">Scenario 1<a class="anchor" aria-label="anchor" href="#scenario-1"></a>
+</h4>
 <p>We will first illustrate that a two-level merging case, where the
 first level refers to the sample effect removal within each batch, and
 the second level refers to the merging of two batches.</p>
@@ -410,14 +405,14 @@ indicates for each level, which indices of the cells are going into
 merging. The number of the element of the list should be the same with
 the number of level of merging. For each element, it should contain a
 list of vectors of indices of each merging.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Construct a hierarchical index list</span></span>
 <span><span class="va">h_idx_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>level1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">example_sce</span><span class="op">)</span><span class="op">)</span>, <span class="va">example_sce</span><span class="op">$</span><span class="va">batch</span><span class="op">)</span>,</span>
 <span>                   level2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">example_sce</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>On level 1, we will perform two merging, one for each batch.
 Therefore, we have a list of two vectors of indices. Each indicates the
 indices of the cells of the batches.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">h_idx_list</span><span class="op">$</span><span class="va">level1</span></span>
 <span><span class="co">#&gt; $batch2</span></span>
 <span><span class="co">#&gt;   [1]   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18</span></span>
@@ -437,7 +432,7 @@ indices of the cells of the batches.</p>
 <p>On level 2, we will perform one merging to merge two batches.
 Therefore, we have a list of one vector of indices, indicates all the
 indices of the cells of the full data.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">h_idx_list</span><span class="op">$</span><span class="va">level2</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
 <span><span class="co">#&gt;   [1]   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18</span></span>
@@ -456,13 +451,13 @@ indices of the cells of the full data.</p>
 (<code>batch_list</code>), which has the same structure with the
 <code>h_idx_list</code>, but indicates the batch label of the
 <code>h_idx_list</code>.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Construct a batch information list</span></span>
 <span><span class="va">batch_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>level1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">example_sce</span><span class="op">$</span><span class="va">sample</span>, <span class="va">example_sce</span><span class="op">$</span><span class="va">batch</span><span class="op">)</span>,</span>
 <span>                   level2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">example_sce</span><span class="op">$</span><span class="va">batch</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>We can see <code>batch_list</code> indicates the batch label for
 level of the merging.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">batch_list</span><span class="op">$</span><span class="va">level1</span></span>
 <span><span class="co">#&gt; $batch2</span></span>
 <span><span class="co">#&gt;   [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1</span></span>
@@ -480,7 +475,7 @@ of number of unwanted variation (k in RUV model) for each level of the
 merging. We suggest a lower <code>ruvK</code> in the first level. Here
 we set <code>ruvK_list = c(2, 5)</code> which indicates we will set
 RUV’s k equal to 2 in the first level and 5 in the second level.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scMerge2_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scMerge/man/scMerge2h.html" class="external-link">scMerge2h</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html" class="external-link">logcounts</a></span><span class="op">(</span><span class="va">example_sce</span><span class="op">)</span>,</span>
 <span>                          batch_list <span class="op">=</span> <span class="va">batch_list</span>,</span>
 <span>                          h_idx_list <span class="op">=</span> <span class="va">h_idx_list</span>,</span>
@@ -489,7 +484,7 @@ RUV’s k equal to 2 in the first level and 5 in the second level.</p>
 <span>                          verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>The output of <code>scMerge2h</code> is a list of matrices indicates
 the adjusted matrix from each level.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">scMerge2_res</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 2</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">scMerge2_res</span>, <span class="va">dim</span><span class="op">)</span></span>
@@ -500,15 +495,12 @@ the adjusted matrix from each level.</p>
 <span><span class="co">#&gt; [1] 1047  200</span></span></code></pre></div>
 <p>Here we will use the adjusted matrix from the last level as the final
 adjusted matrix.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></span><span class="op">(</span><span class="va">example_sce</span>, <span class="st">"scMerge2"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">scMerge2_res</span><span class="op">[[</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">h_idx_list</span><span class="op">)</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2022</span><span class="op">)</span></span>
 <span><span class="va">example_sce</span> <span class="op">&lt;-</span> <span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocSingular/man/runPCA.html" class="external-link">runPCA</a></span><span class="op">(</span><span class="va">example_sce</span>, exprs_values <span class="op">=</span> <span class="st">'scMerge2'</span><span class="op">)</span>                           </span>
-<span><span class="co">#&gt; Warning: useNames = NA is deprecated. Instead, specify either useNames = TRUE</span></span>
-<span><span class="co">#&gt; or useNames = TRUE.</span></span>
 <span><span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/plotPCA.html" class="external-link">plotPCA</a></span><span class="op">(</span><span class="va">example_sce</span>, colour_by <span class="op">=</span> <span class="st">'cellTypes'</span>, shape <span class="op">=</span> <span class="st">'batch'</span><span class="op">)</span></span></code></pre></div>
-<p><img src="an_intro_to_scMerge2_files/figure-html/unnamed-chunk-14-1.png" width="700"></p>
-</div>
+<p><img src="an_intro_to_scMerge2_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
 </div>
 <div class="section level4">
 <h4 id="scenario-2">Scenario 2<a class="anchor" aria-label="anchor" href="#scenario-2"></a>
@@ -517,7 +509,7 @@ adjusted matrix.</p>
 on level 1 above, we can only merge data for one batch. As an example,
 we can start from modify the batch index list and hierarchical index
 list to remove the list of batch 2 on level 1.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">h_idx_list2</span> <span class="op">&lt;-</span> <span class="va">h_idx_list</span></span>
 <span><span class="va">batch_list2</span> <span class="op">&lt;-</span> <span class="va">batch_list</span></span>
 <span><span class="va">h_idx_list2</span><span class="op">$</span><span class="va">level1</span><span class="op">$</span><span class="va">batch2</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
@@ -578,28 +570,187 @@ list to remove the list of batch 2 on level 1.</p>
 <span><span class="co">#&gt; [181] batch3 batch3 batch3 batch3 batch3 batch3 batch3 batch3 batch3 batch3</span></span>
 <span><span class="co">#&gt; [191] batch3 batch3 batch3 batch3 batch3 batch3 batch3 batch3 batch3 batch3</span></span>
 <span><span class="co">#&gt; Levels: batch2 batch3</span></span></code></pre></div>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scMerge2_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scMerge/man/scMerge2h.html" class="external-link">scMerge2h</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html" class="external-link">logcounts</a></span><span class="op">(</span><span class="va">example_sce</span><span class="op">)</span>,</span>
 <span>                          batch_list <span class="op">=</span> <span class="va">batch_list2</span>,</span>
 <span>                          h_idx_list <span class="op">=</span> <span class="va">h_idx_list2</span>,</span>
 <span>                          ctl <span class="op">=</span> <span class="va">segList_ensemblGeneID</span><span class="op">$</span><span class="va">mouse</span><span class="op">$</span><span class="va">mouse_scSEG</span>,</span>
 <span>                          ruvK_list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">5</span><span class="op">)</span>,</span>
 <span>                          verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></span><span class="op">(</span><span class="va">example_sce</span>, <span class="st">"scMerge2"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">scMerge2_res</span><span class="op">[[</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">h_idx_list</span><span class="op">)</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2022</span><span class="op">)</span></span>
 <span><span class="va">example_sce</span> <span class="op">&lt;-</span> <span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocSingular/man/runPCA.html" class="external-link">runPCA</a></span><span class="op">(</span><span class="va">example_sce</span>, exprs_values <span class="op">=</span> <span class="st">'scMerge2'</span><span class="op">)</span>                           </span>
-<span><span class="co">#&gt; Warning: useNames = NA is deprecated. Instead, specify either useNames = TRUE</span></span>
-<span><span class="co">#&gt; or useNames = TRUE.</span></span>
 <span><span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/plotPCA.html" class="external-link">plotPCA</a></span><span class="op">(</span><span class="va">example_sce</span>, colour_by <span class="op">=</span> <span class="st">'cellTypes'</span>, shape <span class="op">=</span> <span class="st">'batch'</span><span class="op">)</span></span></code></pre></div>
-<p><img src="an_intro_to_scMerge2_files/figure-html/unnamed-chunk-17-1.png" width="700"></p>
+<p><img src="an_intro_to_scMerge2_files/figure-html/unnamed-chunk-18-1.png" width="700"></p>
 </div>
+</div>
+<div class="section level3">
+<h3 id="phenotype-specific-pseudo-replicates">Phenotype specific pseudo-replicates<a class="anchor" aria-label="anchor" href="#phenotype-specific-pseudo-replicates"></a>
+</h3>
+<p>Next, we will use another dataset as an example with two conditions
+to demonstrate multi-condition data integration. The data is a subset of
+CITE-seq data from a COVID-19 study (Stephenson et al. 2021). Here we
+subset the data to only 4 individuals from 2 sites.</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">sce_covid</span><span class="op">)</span></span>
+<span><span class="va">sce_covid</span></span>
+<span><span class="co">#&gt; class: SingleCellExperiment </span></span>
+<span><span class="co">#&gt; dim: 12037 3000 </span></span>
+<span><span class="co">#&gt; metadata(0):</span></span>
+<span><span class="co">#&gt; assays(2): counts logcounts</span></span>
+<span><span class="co">#&gt; rownames(12037): LINC00115 NOC2L ... AL592183.1 AC240274.1</span></span>
+<span><span class="co">#&gt; rowData names(0):</span></span>
+<span><span class="co">#&gt; colnames(3000): BGCV03_GCGAGAAGTTTGGCGC-1 CCGTACTGTGTCAATC-MH8919332</span></span>
+<span><span class="co">#&gt;   ... CTACATTAGATCCCGC-MH8919331 BGCV01_TCAGCTCAGGCTCAGA-1</span></span>
+<span><span class="co">#&gt; colData names(6): meta_sample_id level1 ... Site meta_severity</span></span>
+<span><span class="co">#&gt; reducedDimNames(2): PCA_ADT UMAP_ADT</span></span>
+<span><span class="co">#&gt; mainExpName: NULL</span></span>
+<span><span class="co">#&gt; altExpNames(1): ADT</span></span></code></pre></div>
+<p>We can first explore the data structure of this subset data. We can
+see we have 4 samples from 2 sites, each site has one sample from
+Healthy donor and one sample from Mild/Moderate COVID-19 patients.</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sce_covid</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>       <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">meta_sample_id</span>,</span>
+<span>           fill <span class="op">=</span> <span class="va">level2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_bar</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">meta_severity</span> <span class="op">+</span> <span class="va">Site</span>, scale <span class="op">=</span> <span class="st">"free_y"</span>, ncol <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="an_intro_to_scMerge2_files/figure-html/unnamed-chunk-20-1.png" width="700"></p>
+<p>We will first look at the RNA-seq data.</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">decomp</span> <span class="op">&lt;-</span> <span class="fu">scran</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/scran/man/modelGeneVar.html" class="external-link">modelGeneVar</a></span><span class="op">(</span><span class="va">sce_covid</span><span class="op">)</span></span>
+<span><span class="va">hvg</span> <span class="op">&lt;-</span> <span class="fu">scran</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/scran/man/getTopHVGs.html" class="external-link">getTopHVGs</a></span><span class="op">(</span><span class="va">decomp</span>, n <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span></span>
+<span><span class="va">sce_covid</span> <span class="op">&lt;-</span> <span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocSingular/man/runPCA.html" class="external-link">runPCA</a></span><span class="op">(</span><span class="va">sce_covid</span>, </span>
+<span>                      exprs_values <span class="op">=</span> <span class="st">'logcounts'</span>, subset_row <span class="op">=</span> <span class="va">hvg</span><span class="op">)</span>           </span>
+<span><span class="va">sce_covid</span> <span class="op">&lt;-</span> <span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/scater/man/runUMAP.html" class="external-link">runUMAP</a></span><span class="op">(</span><span class="va">sce_covid</span>, dimred <span class="op">=</span> <span class="st">"PCA"</span><span class="op">)</span>    </span>
+<span><span class="va">g1</span> <span class="op">&lt;-</span> <span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/scater/man/plot_reddim.html" class="external-link">plotUMAP</a></span><span class="op">(</span><span class="va">sce_covid</span>, colour_by <span class="op">=</span> <span class="st">'level2'</span>, shape <span class="op">=</span> <span class="st">'Site'</span><span class="op">)</span></span>
+<span><span class="va">g2</span> <span class="op">&lt;-</span> <span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/scater/man/plot_reddim.html" class="external-link">plotUMAP</a></span><span class="op">(</span><span class="va">sce_covid</span>, colour_by <span class="op">=</span> <span class="st">'level3'</span>, shape <span class="op">=</span> <span class="st">'Site'</span><span class="op">)</span></span>
+<span><span class="va">g3</span> <span class="op">&lt;-</span> <span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/scater/man/plot_reddim.html" class="external-link">plotUMAP</a></span><span class="op">(</span><span class="va">sce_covid</span>, colour_by <span class="op">=</span> <span class="st">'meta_severity'</span><span class="op">)</span></span>
+<span><span class="va">g4</span> <span class="op">&lt;-</span> <span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/scater/man/plot_reddim.html" class="external-link">plotUMAP</a></span><span class="op">(</span><span class="va">sce_covid</span>, colour_by <span class="op">=</span> <span class="st">'Site'</span><span class="op">)</span></span>
+<span><span class="fu">ggpubr</span><span class="fu">::</span><span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/ggarrange.html" class="external-link">ggarrange</a></span><span class="op">(</span><span class="va">g1</span>, <span class="va">g2</span>, <span class="va">g3</span>, <span class="va">g4</span>, ncol <span class="op">=</span> <span class="fl">2</span>, nrow <span class="op">=</span> <span class="fl">2</span>, align <span class="op">=</span> <span class="st">"hv"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="an_intro_to_scMerge2_files/figure-html/unnamed-chunk-21-1.png" width="700"></p>
+<p>Next, we need to determine the stably expressed genes used as
+negative control</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">sce_covid</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "LINC00115" "NOC2L"     "KLHL17"    "PLEKHN1"   "HES4"      "ISG15"</span></span></code></pre></div>
+<p>We can then load the stably expressed genes data that is coded in
+gene symbol:</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">segList</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">segList</span><span class="op">$</span><span class="va">human</span><span class="op">$</span><span class="va">human_scSEG</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "AAR2"  "AATF"  "ABCF3" "ABHD2" "ABT1"  "ACAP2"</span></span></code></pre></div>
+<p>We can then run <code>scMerge2</code> by setting</p>
+<ol style="list-style-type: decimal">
+<li>
+<code>ctl = segList$human$human_scSEG</code>;</li>
+<li>
+<code>batch = sce_covid$Site</code>;</li>
+<li>
+<code>condition = sce_covid$meta_severity</code> to trigger the
+pneotype-specific pseudo-replicates identification.</li>
+</ol>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">scMerge2_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scMerge/man/scMerge2.html" class="external-link">scMerge2</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html" class="external-link">logcounts</a></span><span class="op">(</span><span class="va">sce_covid</span><span class="op">)</span>,</span>
+<span>                         batch <span class="op">=</span> <span class="va">sce_covid</span><span class="op">$</span><span class="va">Site</span>,</span>
+<span>                         ctl <span class="op">=</span> <span class="va">segList</span><span class="op">$</span><span class="va">human</span><span class="op">$</span><span class="va">human_scSEG</span>,</span>
+<span>                         condition <span class="op">=</span> <span class="va">sce_covid</span><span class="op">$</span><span class="va">meta_severity</span>,</span>
+<span>                         cellTypes <span class="op">=</span> <span class="va">sce_covid</span><span class="op">$</span><span class="va">level3</span>,</span>
+<span>                         verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></span><span class="op">(</span><span class="va">sce_covid</span>, <span class="st">"scMerge2"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">scMerge2_res</span><span class="op">$</span><span class="va">newY</span></span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2022</span><span class="op">)</span></span>
+<span><span class="va">sce_covid</span> <span class="op">&lt;-</span> <span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocSingular/man/runPCA.html" class="external-link">runPCA</a></span><span class="op">(</span><span class="va">sce_covid</span>, exprs_values <span class="op">=</span> <span class="st">'scMerge2'</span>, subset_row <span class="op">=</span> <span class="va">hvg</span><span class="op">)</span>           </span>
+<span><span class="va">sce_covid</span> <span class="op">&lt;-</span> <span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/scater/man/runUMAP.html" class="external-link">runUMAP</a></span><span class="op">(</span><span class="va">sce_covid</span>, dimred <span class="op">=</span> <span class="st">"PCA"</span><span class="op">)</span>    </span>
+<span><span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/scater/man/plot_reddim.html" class="external-link">plotUMAP</a></span><span class="op">(</span><span class="va">sce_covid</span>, colour_by <span class="op">=</span> <span class="st">'level3'</span>, shape <span class="op">=</span> <span class="st">'Site'</span><span class="op">)</span></span></code></pre></div>
+<p><img src="an_intro_to_scMerge2_files/figure-html/unnamed-chunk-25-1.png" width="700"></p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/scater/man/plot_reddim.html" class="external-link">plotUMAP</a></span><span class="op">(</span><span class="va">sce_covid</span>, colour_by <span class="op">=</span> <span class="st">'meta_severity'</span><span class="op">)</span></span></code></pre></div>
+<p><img src="an_intro_to_scMerge2_files/figure-html/unnamed-chunk-25-2.png" width="700"></p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/scater/man/plot_reddim.html" class="external-link">plotUMAP</a></span><span class="op">(</span><span class="va">sce_covid</span>, colour_by <span class="op">=</span> <span class="st">'Site'</span><span class="op">)</span></span></code></pre></div>
+<p><img src="an_intro_to_scMerge2_files/figure-html/unnamed-chunk-25-3.png" width="700"></p>
+</div>
+<div class="section level3">
+<h3 id="cite-seq-data-integration">CITE-seq data integration<a class="anchor" aria-label="anchor" href="#cite-seq-data-integration"></a>
+</h3>
+<p>Next, we will explore the ADT protein abundance data.</p>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/altExps.html" class="external-link">altExp</a></span><span class="op">(</span><span class="va">sce_covid</span>, <span class="st">"ADT"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; class: SummarizedExperiment </span></span>
+<span><span class="co">#&gt; dim: 192 3000 </span></span>
+<span><span class="co">#&gt; metadata(0):</span></span>
+<span><span class="co">#&gt; assays(3): counts logcounts scMerge2</span></span>
+<span><span class="co">#&gt; rownames(192): AB_CD80 AB_CD86 ... AB_LIGHT AB_DR3</span></span>
+<span><span class="co">#&gt; rowData names(0):</span></span>
+<span><span class="co">#&gt; colnames(3000): BGCV03_GCGAGAAGTTTGGCGC-1 CCGTACTGTGTCAATC-MH8919332</span></span>
+<span><span class="co">#&gt;   ... CTACATTAGATCCCGC-MH8919331 BGCV01_TCAGCTCAGGCTCAGA-1</span></span>
+<span><span class="co">#&gt; colData names(0):</span></span></code></pre></div>
+<p>This CITE-seq data has measure 192 proteins. We can see that similar
+to scRNA-seq data, the protein abundance data also displays the batch
+effect between the two sites.</p>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2022</span><span class="op">)</span></span>
+<span><span class="va">sce_covid</span> <span class="op">&lt;-</span> <span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocSingular/man/runPCA.html" class="external-link">runPCA</a></span><span class="op">(</span><span class="va">sce_covid</span>, exprs_values <span class="op">=</span> <span class="st">'logcounts'</span>, </span>
+<span>                      altexp <span class="op">=</span> <span class="st">"ADT"</span>, name <span class="op">=</span> <span class="st">"PCA_ADT"</span><span class="op">)</span>           </span>
+<span><span class="va">sce_covid</span> <span class="op">&lt;-</span> <span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/scater/man/runUMAP.html" class="external-link">runUMAP</a></span><span class="op">(</span><span class="va">sce_covid</span>, dimred <span class="op">=</span> <span class="st">"PCA_ADT"</span>, name <span class="op">=</span> <span class="st">"UMAP_ADT"</span><span class="op">)</span>    </span>
+<span><span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/scater/man/plotReducedDim.html" class="external-link">plotReducedDim</a></span><span class="op">(</span><span class="va">sce_covid</span>, colour_by <span class="op">=</span> <span class="st">'level3'</span>, </span>
+<span>                       shape <span class="op">=</span> <span class="st">'Site'</span>, dimred <span class="op">=</span> <span class="st">"UMAP_ADT"</span><span class="op">)</span>   </span></code></pre></div>
+<p><img src="an_intro_to_scMerge2_files/figure-html/unnamed-chunk-27-1.png" width="700"></p>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/scater/man/plotReducedDim.html" class="external-link">plotReducedDim</a></span><span class="op">(</span><span class="va">sce_covid</span>, colour_by <span class="op">=</span> <span class="st">'meta_severity'</span>, dimred <span class="op">=</span> <span class="st">"UMAP_ADT"</span><span class="op">)</span>   </span></code></pre></div>
+<p><img src="an_intro_to_scMerge2_files/figure-html/unnamed-chunk-27-2.png" width="700"></p>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/scater/man/plotReducedDim.html" class="external-link">plotReducedDim</a></span><span class="op">(</span><span class="va">sce_covid</span>, colour_by <span class="op">=</span> <span class="st">'Site'</span>, dimred <span class="op">=</span> <span class="st">"UMAP_ADT"</span><span class="op">)</span>   </span></code></pre></div>
+<p><img src="an_intro_to_scMerge2_files/figure-html/unnamed-chunk-27-3.png" width="700"></p>
+<p>We will try the following settings of scMerge2 to integrate the
+protein abundance</p>
+<ol style="list-style-type: decimal">
+<li>We will use all proteins as negative control
+<code>ctl = rownames(altExp(sce_covid, "ADT"))</code> (we find that for
+data with small number of features, using all features as negative
+control usually works well);</li>
+<li>We will start from a smaller number of unwanted varaition as the
+number of features in total is only 192: <code>ruvK = 10</code>.</li>
+</ol>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">scMerge2_res_adt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scMerge/man/scMerge2.html" class="external-link">scMerge2</a></span><span class="op">(</span>exprsMat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/altExps.html" class="external-link">altExp</a></span><span class="op">(</span><span class="va">sce_covid</span>, <span class="st">"ADT"</span><span class="op">)</span>, <span class="st">"logcounts"</span><span class="op">)</span>,</span>
+<span>                             batch <span class="op">=</span> <span class="va">sce_covid</span><span class="op">$</span><span class="va">Site</span>,</span>
+<span>                             ctl <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/altExps.html" class="external-link">altExp</a></span><span class="op">(</span><span class="va">sce_covid</span>, <span class="st">"ADT"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                             condition <span class="op">=</span> <span class="va">sce_covid</span><span class="op">$</span><span class="va">meta_severity</span>,</span>
+<span>                             ruvK <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>                             verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in (function (A, nv = 5, nu = nv, maxit = 1000, work = nv + 7, reorth =</span></span>
+<span><span class="co">#&gt; TRUE, : You're computing too large a percentage of total singular values, use a</span></span>
+<span><span class="co">#&gt; standard svd instead.</span></span>
+<span><span class="co">#&gt; Warning in (function (A, nv = 5, nu = nv, maxit = 1000, work = nv + 7, reorth =</span></span>
+<span><span class="co">#&gt; TRUE, : You're computing too large a percentage of total singular values, use a</span></span>
+<span><span class="co">#&gt; standard svd instead.</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/altExps.html" class="external-link">altExp</a></span><span class="op">(</span><span class="va">sce_covid</span>, <span class="st">"ADT"</span><span class="op">)</span>, <span class="st">"scMerge2"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">scMerge2_res_adt</span><span class="op">$</span><span class="va">newY</span></span></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2022</span><span class="op">)</span></span>
+<span><span class="va">sce_covid</span> <span class="op">&lt;-</span> <span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocSingular/man/runPCA.html" class="external-link">runPCA</a></span><span class="op">(</span><span class="va">sce_covid</span>, exprs_values <span class="op">=</span> <span class="st">'scMerge2'</span>, </span>
+<span>                      altexp <span class="op">=</span> <span class="st">"ADT"</span>, name <span class="op">=</span> <span class="st">"PCA_ADT"</span><span class="op">)</span>           </span>
+<span><span class="va">sce_covid</span> <span class="op">&lt;-</span> <span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/scater/man/runUMAP.html" class="external-link">runUMAP</a></span><span class="op">(</span><span class="va">sce_covid</span>, dimred <span class="op">=</span> <span class="st">"PCA_ADT"</span>, name <span class="op">=</span> <span class="st">"UMAP_ADT"</span><span class="op">)</span>    </span>
+<span><span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/scater/man/plotReducedDim.html" class="external-link">plotReducedDim</a></span><span class="op">(</span><span class="va">sce_covid</span>, colour_by <span class="op">=</span> <span class="st">'level3'</span>, </span>
+<span>                       shape <span class="op">=</span> <span class="st">'Site'</span>, dimred <span class="op">=</span> <span class="st">"UMAP_ADT"</span><span class="op">)</span>   </span></code></pre></div>
+<p><img src="an_intro_to_scMerge2_files/figure-html/unnamed-chunk-29-1.png" width="700"></p>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/scater/man/plotReducedDim.html" class="external-link">plotReducedDim</a></span><span class="op">(</span><span class="va">sce_covid</span>, colour_by <span class="op">=</span> <span class="st">'meta_severity'</span>, dimred <span class="op">=</span> <span class="st">"UMAP_ADT"</span><span class="op">)</span>   </span></code></pre></div>
+<p><img src="an_intro_to_scMerge2_files/figure-html/unnamed-chunk-29-2.png" width="700"></p>
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/scater/man/plotReducedDim.html" class="external-link">plotReducedDim</a></span><span class="op">(</span><span class="va">sce_covid</span>, colour_by <span class="op">=</span> <span class="st">'Site'</span>, dimred <span class="op">=</span> <span class="st">"UMAP_ADT"</span><span class="op">)</span>   </span></code></pre></div>
+<p><img src="an_intro_to_scMerge2_files/figure-html/unnamed-chunk-29-3.png" width="700"></p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="session-info">Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R version 4.3.1 (2023-06-16)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu (64-bit)</span></span>
@@ -625,84 +776,67 @@ list to remove the list of batch 2 on level 1.</p>
 <span><span class="co">#&gt; [8] base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt;  [1] scater_1.29.0               ggplot2_3.4.2              </span></span>
-<span><span class="co">#&gt;  [3] scuttle_1.11.0              scMerge_1.17.0             </span></span>
-<span><span class="co">#&gt;  [5] SingleCellExperiment_1.23.0 SummarizedExperiment_1.31.1</span></span>
-<span><span class="co">#&gt;  [7] Biobase_2.61.0              GenomicRanges_1.53.1       </span></span>
-<span><span class="co">#&gt;  [9] GenomeInfoDb_1.37.2         IRanges_2.35.2             </span></span>
-<span><span class="co">#&gt; [11] S4Vectors_0.39.1            BiocGenerics_0.47.0        </span></span>
-<span><span class="co">#&gt; [13] MatrixGenerics_1.13.1       matrixStats_1.0.0          </span></span>
+<span><span class="co">#&gt;  [1] scMergeBioc2023_1.0.0       ggpubr_0.6.0               </span></span>
+<span><span class="co">#&gt;  [3] batchelor_1.17.2            DelayedMatrixStats_1.23.0  </span></span>
+<span><span class="co">#&gt;  [5] DelayedArray_0.27.10        SparseArray_1.1.11         </span></span>
+<span><span class="co">#&gt;  [7] S4Arrays_1.1.5              abind_1.4-5                </span></span>
+<span><span class="co">#&gt;  [9] Matrix_1.6-0                scran_1.29.0               </span></span>
+<span><span class="co">#&gt; [11] scater_1.29.3               ggplot2_3.4.2              </span></span>
+<span><span class="co">#&gt; [13] scuttle_1.11.2              scMerge_1.17.0             </span></span>
+<span><span class="co">#&gt; [15] SingleCellExperiment_1.23.0 SummarizedExperiment_1.31.1</span></span>
+<span><span class="co">#&gt; [17] Biobase_2.61.0              GenomicRanges_1.53.1       </span></span>
+<span><span class="co">#&gt; [19] GenomeInfoDb_1.37.2         IRanges_2.35.2             </span></span>
+<span><span class="co">#&gt; [21] S4Vectors_0.39.1            BiocGenerics_0.47.0        </span></span>
+<span><span class="co">#&gt; [23] MatrixGenerics_1.13.1       matrixStats_1.0.0          </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
-<span><span class="co">#&gt;   [1] RColorBrewer_1.1-3        rstudioapi_0.15.0        </span></span>
-<span><span class="co">#&gt;   [3] jsonlite_1.8.7            magrittr_2.0.3           </span></span>
-<span><span class="co">#&gt;   [5] ggbeeswarm_0.7.2          farver_2.1.1             </span></span>
-<span><span class="co">#&gt;   [7] rmarkdown_2.23            fs_1.6.3                 </span></span>
-<span><span class="co">#&gt;   [9] zlibbioc_1.47.0           ragg_1.2.5               </span></span>
-<span><span class="co">#&gt;  [11] vctrs_0.6.3               memoise_2.0.1            </span></span>
-<span><span class="co">#&gt;  [13] DelayedMatrixStats_1.23.0 RCurl_1.98-1.12          </span></span>
-<span><span class="co">#&gt;  [15] base64enc_0.1-3           htmltools_0.5.5          </span></span>
-<span><span class="co">#&gt;  [17] S4Arrays_1.1.5            BiocNeighbors_1.19.0     </span></span>
-<span><span class="co">#&gt;  [19] SparseArray_1.1.11        Formula_1.2-5            </span></span>
-<span><span class="co">#&gt;  [21] sass_0.4.7                StanHeaders_2.26.27      </span></span>
-<span><span class="co">#&gt;  [23] reldist_1.7-2             KernSmooth_2.23-22       </span></span>
-<span><span class="co">#&gt;  [25] bslib_0.5.0               htmlwidgets_1.6.2        </span></span>
-<span><span class="co">#&gt;  [27] desc_1.4.2                cachem_1.0.8             </span></span>
-<span><span class="co">#&gt;  [29] ResidualMatrix_1.11.0     sfsmisc_1.1-15           </span></span>
-<span><span class="co">#&gt;  [31] igraph_1.5.0.1            startupmsg_0.9.6         </span></span>
-<span><span class="co">#&gt;  [33] lifecycle_1.0.3           pkgconfig_2.0.3          </span></span>
-<span><span class="co">#&gt;  [35] M3Drop_1.27.0             rsvd_1.0.5               </span></span>
-<span><span class="co">#&gt;  [37] Matrix_1.6-0              R6_2.5.1                 </span></span>
-<span><span class="co">#&gt;  [39] fastmap_1.1.1             GenomeInfoDbData_1.2.10  </span></span>
-<span><span class="co">#&gt;  [41] digest_0.6.33             numDeriv_2016.8-1.1      </span></span>
-<span><span class="co">#&gt;  [43] colorspace_2.1-0          ps_1.7.5                 </span></span>
-<span><span class="co">#&gt;  [45] rprojroot_2.0.3           dqrng_0.3.0              </span></span>
-<span><span class="co">#&gt;  [47] irlba_2.3.5.1             textshaping_0.3.6        </span></span>
-<span><span class="co">#&gt;  [49] Hmisc_5.1-0               beachmat_2.17.14         </span></span>
-<span><span class="co">#&gt;  [51] labeling_0.4.2            fansi_1.0.4              </span></span>
-<span><span class="co">#&gt;  [53] abind_1.4-5               mgcv_1.9-0               </span></span>
-<span><span class="co">#&gt;  [55] compiler_4.3.1            withr_2.5.0              </span></span>
-<span><span class="co">#&gt;  [57] htmlTable_2.4.1           backports_1.4.1          </span></span>
-<span><span class="co">#&gt;  [59] inline_0.3.19             BiocParallel_1.35.3      </span></span>
-<span><span class="co">#&gt;  [61] viridis_0.6.4             highr_0.10               </span></span>
-<span><span class="co">#&gt;  [63] pkgbuild_1.4.2            gplots_3.1.3             </span></span>
-<span><span class="co">#&gt;  [65] MASS_7.3-60               proxyC_0.3.3             </span></span>
-<span><span class="co">#&gt;  [67] DelayedArray_0.27.10      bluster_1.11.3           </span></span>
-<span><span class="co">#&gt;  [69] gtools_3.9.4              caTools_1.18.2           </span></span>
-<span><span class="co">#&gt;  [71] loo_2.6.0                 distr_2.9.2              </span></span>
-<span><span class="co">#&gt;  [73] tools_4.3.1               vipor_0.4.5              </span></span>
-<span><span class="co">#&gt;  [75] foreign_0.8-84            beeswarm_0.4.0           </span></span>
-<span><span class="co">#&gt;  [77] nnet_7.3-19               glue_1.6.2               </span></span>
-<span><span class="co">#&gt;  [79] batchelor_1.17.2          callr_3.7.3              </span></span>
-<span><span class="co">#&gt;  [81] nlme_3.1-162              cvTools_0.3.2            </span></span>
-<span><span class="co">#&gt;  [83] grid_4.3.1                checkmate_2.2.0          </span></span>
-<span><span class="co">#&gt;  [85] cluster_2.1.4             gtable_0.3.3             </span></span>
-<span><span class="co">#&gt;  [87] data.table_1.14.8         metapod_1.9.0            </span></span>
-<span><span class="co">#&gt;  [89] BiocSingular_1.17.1       ScaledMatrix_1.9.1       </span></span>
-<span><span class="co">#&gt;  [91] utf8_1.2.3                XVector_0.41.1           </span></span>
-<span><span class="co">#&gt;  [93] ggrepel_0.9.3             pillar_1.9.0             </span></span>
-<span><span class="co">#&gt;  [95] stringr_1.5.0             limma_3.57.6             </span></span>
-<span><span class="co">#&gt;  [97] robustbase_0.99-0         splines_4.3.1            </span></span>
-<span><span class="co">#&gt;  [99] lattice_0.21-8            densEstBayes_1.0-2.2     </span></span>
-<span><span class="co">#&gt; [101] ruv_0.9.7.1               locfit_1.5-9.8           </span></span>
-<span><span class="co">#&gt; [103] knitr_1.43                gridExtra_2.3            </span></span>
-<span><span class="co">#&gt; [105] edgeR_3.43.7              xfun_0.39                </span></span>
-<span><span class="co">#&gt; [107] statmod_1.5.0             DEoptimR_1.1-0           </span></span>
-<span><span class="co">#&gt; [109] rstan_2.21.8              stringi_1.7.12           </span></span>
-<span><span class="co">#&gt; [111] yaml_2.3.7                evaluate_0.21            </span></span>
-<span><span class="co">#&gt; [113] codetools_0.2-19          bbmle_1.0.25             </span></span>
-<span><span class="co">#&gt; [115] tibble_3.2.1              cli_3.6.1                </span></span>
-<span><span class="co">#&gt; [117] RcppParallel_5.1.7        rpart_4.1.19             </span></span>
-<span><span class="co">#&gt; [119] systemfonts_1.0.4         munsell_0.5.0            </span></span>
-<span><span class="co">#&gt; [121] processx_3.8.2            jquerylib_0.1.4          </span></span>
-<span><span class="co">#&gt; [123] Rcpp_1.0.11               bdsmatrix_1.3-6          </span></span>
-<span><span class="co">#&gt; [125] parallel_4.3.1            rstantools_2.3.1.1       </span></span>
-<span><span class="co">#&gt; [127] pkgdown_2.0.7             prettyunits_1.1.1        </span></span>
-<span><span class="co">#&gt; [129] scran_1.29.0              sparseMatrixStats_1.13.0 </span></span>
-<span><span class="co">#&gt; [131] bitops_1.0-7              viridisLite_0.4.2        </span></span>
-<span><span class="co">#&gt; [133] mvtnorm_1.2-2             scales_1.2.1             </span></span>
-<span><span class="co">#&gt; [135] purrr_1.0.1               crayon_1.5.2             </span></span>
-<span><span class="co">#&gt; [137] rlang_1.1.1</span></span></code></pre></div>
+<span><span class="co">#&gt;   [1] splines_4.3.1            bitops_1.0-7             tibble_3.2.1            </span></span>
+<span><span class="co">#&gt;   [4] rpart_4.1.19             lifecycle_1.0.3          rstatix_0.7.2           </span></span>
+<span><span class="co">#&gt;   [7] edgeR_3.43.8             rprojroot_2.0.3          StanHeaders_2.26.27     </span></span>
+<span><span class="co">#&gt;  [10] processx_3.8.2           lattice_0.21-8           MASS_7.3-60             </span></span>
+<span><span class="co">#&gt;  [13] backports_1.4.1          magrittr_2.0.3           limma_3.57.7            </span></span>
+<span><span class="co">#&gt;  [16] Hmisc_5.1-0              sass_0.4.7               rmarkdown_2.23          </span></span>
+<span><span class="co">#&gt;  [19] jquerylib_0.1.4          yaml_2.3.7               metapod_1.9.0           </span></span>
+<span><span class="co">#&gt;  [22] pkgbuild_1.4.2           cowplot_1.1.1            RColorBrewer_1.1-3      </span></span>
+<span><span class="co">#&gt;  [25] ResidualMatrix_1.11.0    zlibbioc_1.47.0          sfsmisc_1.1-15          </span></span>
+<span><span class="co">#&gt;  [28] purrr_1.0.1              RCurl_1.98-1.12          nnet_7.3-19             </span></span>
+<span><span class="co">#&gt;  [31] GenomeInfoDbData_1.2.10  ggrepel_0.9.3            inline_0.3.19           </span></span>
+<span><span class="co">#&gt;  [34] densEstBayes_1.0-2.2     irlba_2.3.5.1            cvTools_0.3.2           </span></span>
+<span><span class="co">#&gt;  [37] dqrng_0.3.0              pkgdown_2.0.7            codetools_0.2-19        </span></span>
+<span><span class="co">#&gt;  [40] tidyselect_1.2.0         farver_2.1.1             ScaledMatrix_1.9.1      </span></span>
+<span><span class="co">#&gt;  [43] viridis_0.6.4            base64enc_0.1-3          jsonlite_1.8.7          </span></span>
+<span><span class="co">#&gt;  [46] BiocNeighbors_1.19.0     Formula_1.2-5            systemfonts_1.0.4       </span></span>
+<span><span class="co">#&gt;  [49] bbmle_1.0.25             tools_4.3.1              startupmsg_0.9.6        </span></span>
+<span><span class="co">#&gt;  [52] ragg_1.2.5               Rcpp_1.0.11              glue_1.6.2              </span></span>
+<span><span class="co">#&gt;  [55] gridExtra_2.3            xfun_0.39                mgcv_1.9-0              </span></span>
+<span><span class="co">#&gt;  [58] dplyr_1.1.2              loo_2.6.0                withr_2.5.0             </span></span>
+<span><span class="co">#&gt;  [61] numDeriv_2016.8-1.1      fastmap_1.1.1            bluster_1.11.4          </span></span>
+<span><span class="co">#&gt;  [64] fansi_1.0.4              callr_3.7.3              caTools_1.18.2          </span></span>
+<span><span class="co">#&gt;  [67] digest_0.6.33            rsvd_1.0.5               R6_2.5.1                </span></span>
+<span><span class="co">#&gt;  [70] textshaping_0.3.6        colorspace_2.1-0         reldist_1.7-2           </span></span>
+<span><span class="co">#&gt;  [73] gtools_3.9.4             utf8_1.2.3               tidyr_1.3.0             </span></span>
+<span><span class="co">#&gt;  [76] generics_0.1.3           data.table_1.14.8        FNN_1.1.3.2             </span></span>
+<span><span class="co">#&gt;  [79] robustbase_0.99-0        prettyunits_1.1.1        htmlwidgets_1.6.2       </span></span>
+<span><span class="co">#&gt;  [82] uwot_0.1.16              pkgconfig_2.0.3          gtable_0.3.3            </span></span>
+<span><span class="co">#&gt;  [85] XVector_0.41.1           htmltools_0.5.5          carData_3.0-5           </span></span>
+<span><span class="co">#&gt;  [88] ruv_0.9.7.1              scales_1.2.1             knitr_1.43              </span></span>
+<span><span class="co">#&gt;  [91] rstudioapi_0.15.0        checkmate_2.2.0          nlme_3.1-162            </span></span>
+<span><span class="co">#&gt;  [94] bdsmatrix_1.3-6          M3Drop_1.27.0            cachem_1.0.8            </span></span>
+<span><span class="co">#&gt;  [97] stringr_1.5.0            KernSmooth_2.23-22       parallel_4.3.1          </span></span>
+<span><span class="co">#&gt; [100] vipor_0.4.5              foreign_0.8-84           desc_1.4.2              </span></span>
+<span><span class="co">#&gt; [103] pillar_1.9.0             grid_4.3.1               proxyC_0.3.3            </span></span>
+<span><span class="co">#&gt; [106] vctrs_0.6.3              gplots_3.1.3             BiocSingular_1.17.1     </span></span>
+<span><span class="co">#&gt; [109] car_3.1-2                beachmat_2.17.14         cluster_2.1.4           </span></span>
+<span><span class="co">#&gt; [112] beeswarm_0.4.0           htmlTable_2.4.1          evaluate_0.21           </span></span>
+<span><span class="co">#&gt; [115] mvtnorm_1.2-2            cli_3.6.1                locfit_1.5-9.8          </span></span>
+<span><span class="co">#&gt; [118] compiler_4.3.1           rlang_1.1.1              crayon_1.5.2            </span></span>
+<span><span class="co">#&gt; [121] rstantools_2.3.1.1       ggsignif_0.6.4           labeling_0.4.2          </span></span>
+<span><span class="co">#&gt; [124] ps_1.7.5                 fs_1.6.3                 ggbeeswarm_0.7.2        </span></span>
+<span><span class="co">#&gt; [127] stringi_1.7.12           rstan_2.21.8             viridisLite_0.4.2       </span></span>
+<span><span class="co">#&gt; [130] BiocParallel_1.35.3      munsell_0.5.0            sparseMatrixStats_1.13.0</span></span>
+<span><span class="co">#&gt; [133] statmod_1.5.0            highr_0.10               igraph_1.5.0.1          </span></span>
+<span><span class="co">#&gt; [136] broom_1.0.5              memoise_2.0.1            RcppParallel_5.1.7      </span></span>
+<span><span class="co">#&gt; [139] bslib_0.5.0              DEoptimR_1.1-0           distr_2.9.2</span></span></code></pre></div>
 </div>
 <div class="footnotes footnotes-end-of-document">
 <hr>
